@@ -37,9 +37,11 @@ footer{display:flex;gap:12px;padding:10px 14px 14px}
 #ma{background:var(--a)}#mb{background:var(--b)}
 .mic.on{outline:4px solid var(--tx);animation:p 1s infinite}
 @keyframes p{50%{opacity:.7}}
-#fb{display:none;gap:8px;padding:0 14px 12px}
-#fb input{flex:1}
-#fb button{font-size:16px;padding:10px 14px;border-radius:10px;border:0;background:var(--a);color:#fff}
+#fb{display:flex;gap:8px;padding:0 14px 12px;align-items:stretch}
+#fb textarea{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);resize:none}
+#fb .gb{display:flex;flex-direction:column;gap:6px}
+#fb button{font-size:14px;padding:8px 12px;border-radius:10px;border:0;color:#fff}
+#go{background:var(--a)}#go2{background:var(--b)}
 </style>
 </head>
 <body>
@@ -58,7 +60,7 @@ footer{display:flex;gap:12px;padding:10px 14px 14px}
 </div>
 </div>
 <div id="st"></div>
-<div id="fb"><input id="tx" placeholder="Scrivi qui (microfono non disponibile)"><button id="go">Traduci</button></div>
+<div id="fb"><textarea id="tx" rows="2" placeholder="Scrivi o incolla un testo da tradurre"></textarea><div class="gb"><button id="go"></button><button id="go2"></button></div></div>
 <footer>
 <button class="mic" id="ma" disabled></button>
 <button class="mic" id="mb" disabled></button>
@@ -72,7 +74,7 @@ for(const s of [la,lb])for(const [c,n] of LANGS)s.add(new Option(n,c));
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
 la.value=ls("la")||"it-IT";lb.value=ls("lb")||"en-US";
 const L=c=>LANGS.find(l=>l[0]===c);
-function labels(){$("ma").textContent="🎤 "+L(la.value)[1];$("mb").textContent="🎤 "+L(lb.value)[1];ls("la",la.value);ls("lb",lb.value)}
+function labels(){$("ma").textContent="🎤 "+L(la.value)[1];$("mb").textContent="🎤 "+L(lb.value)[1];$("go").textContent="Da "+L(la.value)[1];$("go2").textContent="Da "+L(lb.value)[1];ls("la",la.value);ls("lb",lb.value)}
 labels();la.onchange=lb.onchange=labels;
 $("swap").onclick=()=>{const t=la.value;la.value=lb.value;lb.value=t;labels()};
 
@@ -119,10 +121,17 @@ async function getModel(from,to,mode){
   return models.get("nllb");
 }
 async function translate(text,from,to){
-  const m=await getModel(from,to,"use");
-  const r=m.kind==="nllb"?await m.fn(text,{src_lang:L(from)[2],tgt_lang:L(to)[2],max_new_tokens:200}):await m.fn(text,{max_new_tokens:200});
+  // I testi lunghi vengono divisi in frasi e tradotti una alla volta
+  const parts=(text.match(/[^.!?\n]+[.!?]*/g)||[text]).map(p=>p.trim()).filter(Boolean);
+  const out=[];
+  for(let i=0;i<parts.length;i++){
+    const m=await getModel(from,to,"use");
+    if(parts.length>1)st.textContent="Traduco "+(i+1)+"/"+parts.length+"…";
+    const r=m.kind==="nllb"?await m.fn(parts[i],{src_lang:L(from)[2],tgt_lang:L(to)[2],max_new_tokens:200}):await m.fn(parts[i],{max_new_tokens:200});
+    out.push(r[0].translation_text);
+  }
   st.dataset.pre="";
-  return r[0].translation_text;
+  return out.join(" ");
 }
 async function preload(){
   $("dl").disabled=true;$("bar").style.display="block";
@@ -208,8 +217,14 @@ $("ct").onclick=()=>{cont=!cont;ls("cont",cont?"1":"0");ui()};
 ui();
 $("ma").onclick=()=>listen("a");
 $("mb").onclick=()=>listen("b");
-$("go").onclick=()=>{const v=$("tx").value.trim();if(v&&ready){$("tx").value="";handle("a",v)}};
-$("tx").onkeydown=e=>{if(e.key==="Enter")$("go").click()};
+function send(side){
+  const v=$("tx").value.trim();if(!v)return;
+  if(!ready){st.textContent="Scarica prima i modelli (schermata di primo avvio).";return}
+  if(active)stopAll();
+  $("tx").value="";handle(side,v);
+}
+$("go").onclick=()=>send("a");
+$("go2").onclick=()=>send("b");
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
 </body>
