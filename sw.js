@@ -1,7 +1,7 @@
-### 2. File `sw.js` (aggiornato alla v3 per forzare la pulizia della vecchia cache)
+### File `sw.js` (per la cache offline, da tenere nella stessa cartella)
 
 ```javascript
-const CACHE = 'traduttore-offline-v3';
+const CACHE = 'traduttore-offline-v4';
 const FILES = [
   './',
   './index.html',
