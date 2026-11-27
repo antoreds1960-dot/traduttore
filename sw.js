@@ -1,8 +1,16 @@
+### File 2: `sw.js`
+Copia questo codice e salvalo come `sw.js` nella **stessa cartella** di `index.html`:
 
-const CACHE = 'app-v1';
+```javascript
+const CACHE = 'traduttore-offline-v1';
+const FILES = [
+  './',
+  './index.html',
+  'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.0'
+];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './index.html'])));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)));
   self.skipWaiting();
 });
 
