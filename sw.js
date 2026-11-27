@@ -1,8 +1,7 @@
-### File 2: `sw.js`
-Copia questo codice e salvalo come `sw.js` nella **stessa cartella** di `index.html`:
+### 2. File `sw.js` (aggiornato alla v3 per forzare la pulizia della vecchia cache)
 
 ```javascript
-const CACHE = 'traduttore-offline-v2';
+const CACHE = 'traduttore-offline-v3';
 const FILES = [
   './',
   './index.html',
@@ -12,6 +11,15 @@ const FILES = [
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)));
   self.skipWaiting();
+});
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE && !k.includes('transformers') ? caches.delete(k) : null)))
+    )
+  );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', (e) => {
