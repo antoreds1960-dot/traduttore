@@ -20,7 +20,14 @@
     nav button { flex: 1; padding: 12px 4px; border: none; background: none; font-size: 0.9rem; font-weight: 500; color: #6b7280; cursor: pointer; }
     nav button.active { color: #2563eb; border-bottom: 2px solid #2563eb; font-weight: 600; }
 
-    /* Selettore Lingue */
+    /* Selettore Lingue */    // Popola i menu a tendina di partenza e arrivo
+    LINGUE.forEach((l, i) => {
+      langFrom.add(new Option(l.nome, i));
+      langTo.add(new Option(l.nome, i));
+    });
+    langFrom.value = 0; // Italiano
+    langTo.value = 1;   // Inglese
+
     .lang-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: white; margin: 12px 12px 0; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
     select { flex: 1; padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; background: white; }
     .swap-btn { background: #eff6ff; color: #2563eb; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
