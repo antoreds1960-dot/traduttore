@@ -20,14 +20,7 @@
     nav button { flex: 1; padding: 12px 4px; border: none; background: none; font-size: 0.9rem; font-weight: 500; color: #6b7280; cursor: pointer; }
     nav button.active { color: #2563eb; border-bottom: 2px solid #2563eb; font-weight: 600; }
 
-    /* Selettore Lingue */    // Popola i menu a tendina di partenza e arrivo
-    LINGUE.forEach((l, i) => {
-      langFrom.add(new Option(l.nome, i));
-      langTo.add(new Option(l.nome, i));
-    });
-    langFrom.value = 0; // Italiano
-    langTo.value = 1;   // Inglese
-
+    /* Selettore Lingue */
     .lang-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: white; margin: 12px 12px 0; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
     select { flex: 1; padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; background: white; }
     .swap-btn { background: #eff6ff; color: #2563eb; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
@@ -46,7 +39,7 @@
     .result-box { min-height: 110px; font-size: 1.1rem; color: #111827; white-space: pre-wrap; }
     .status-msg { font-size: 0.85rem; color: #2563eb; font-style: italic; }
 
-    /* Viste secondarie (Conversazione, Cronologia, Impostazioni) */
+    /* Viste secondarie */
     .view { display: none; flex-direction: column; gap: 12px; }
     .view.active { display: flex; }
 
@@ -195,7 +188,6 @@
 
   <!-- LOGICA APPLICAZIONE E PWA -->
   <script>
-    // Elenco lingue con codici sia per Online (ISO) che Offline (NLLB) e Voce
     const LINGUE = [
       { nome: "Italiano", iso: "it", nllb: "ita_Latn", speech: "it-IT" },
       { nome: "Inglese", iso: "en", nllb: "eng_Latn", speech: "en-US" },
@@ -203,6 +195,7 @@
       { nome: "Francese", iso: "fr", nllb: "fra_Latn", speech: "fr-FR" },
       { nome: "Tedesco", iso: "de", nllb: "deu_Latn", speech: "de-DE" },
       { nome: "Portoghese", iso: "pt", nllb: "por_Latn", speech: "pt-PT" },
-      { nome: "Arabo", iso: "ar", nllb: "arb_Arab", speech: "ar-SA" },
-      { nome: "Cinese", iso: "zh", nllb: "zho_Hans", speech: "zh-CN" },
-      { nome: "Giapponese", iso: "ja", nllb: "jpn_Jpan", speech: "ja-JP" },
+      { nome: "Olandese", iso: "nl", nllb: "nld_Latn", speech: "nl-NL" },
+      { nome: "Polacco", iso: "pl", nllb: "pol_Latn", speech: "pl-PL" },
+      { nome: "Rumeno", iso: "ro", nllb: "ron_Latn", speech: "ro-RO" },
+      { nome: "Turco", iso: "tr", nllb: "tur_Latn", speech: "tr-TR" },
