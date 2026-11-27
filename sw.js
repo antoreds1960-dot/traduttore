@@ -2,7 +2,7 @@
 Copia questo codice e salvalo come `sw.js` nella **stessa cartella** di `index.html`:
 
 ```javascript
-const CACHE = 'traduttore-offline-v1';
+const CACHE = 'traduttore-offline-v2';
 const FILES = [
   './',
   './index.html',
